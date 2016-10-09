@@ -39,7 +39,7 @@ public class MainActivityFragment extends Fragment {
    // String used when logging error messages
    private static final String TAG = "FlagQuiz Activity";
 
-   private static final int FLAGS_IN_QUIZ = 10;
+   private int FLAGS_IN_QUIZ;
 
    private List<String> fileNameList; // flag file names
    private List<String> quizCountriesList; // countries in current quiz
@@ -47,6 +47,8 @@ public class MainActivityFragment extends Fragment {
    private String correctAnswer; // correct country for the current flag
    private int totalGuesses; // number of guesses made
    private int correctAnswers; // number of correct guesses
+   private int firstAnswerCorrect; // number of correct guesses on First Try
+   private int firstGuess; //Toggle int for if the guess is the first guess or not
    private int guessRows; // number of rows displaying guess Buttons
    private SecureRandom random; // used to randomize the quiz
    private Handler handler; // used to delay loading next flag
@@ -123,6 +125,13 @@ public class MainActivityFragment extends Fragment {
          guessLinearLayouts[row].setVisibility(View.VISIBLE);
    }
 
+   // update FLAGS_IN_QUIZ based on value in SharedPreferences
+   public void updateFLAGS(SharedPreferences sharedPreferences){
+      String choices =
+              sharedPreferences.getString(MainActivity.FLAGS, null);
+      FLAGS_IN_QUIZ = Integer.parseInt(choices) / 2;
+   }
+
    // update world regions for quiz based on values in SharedPreferences
    public void updateRegions(SharedPreferences sharedPreferences) {
       regionsSet =
@@ -151,6 +160,8 @@ public class MainActivityFragment extends Fragment {
 
       correctAnswers = 0; // reset the number of correct answers made
       totalGuesses = 0; // reset the total number of guesses the user made
+      firstAnswerCorrect = 0; // reset the total number of correct first try guesses
+      firstGuess = 0; // reset the first guess to 0;
       quizCountriesList.clear(); // clear prior list of quiz countries
 
       int flagCounter = 1;
@@ -294,6 +305,11 @@ public class MainActivityFragment extends Fragment {
          if (guess.equals(answer)) { // if the guess is correct
             ++correctAnswers; // increment the number of correct answers
 
+            if(firstGuess == 0){
+               ++firstAnswerCorrect;//Check if it's the first guess or not and then increment based on if it was
+            }
+            firstGuess = 0;
+
             // display correct answer in green text
             answerTextView.setText(answer + "!");
             answerTextView.setTextColor(
@@ -315,7 +331,7 @@ public class MainActivityFragment extends Fragment {
                         builder.setMessage(
                            getString(R.string.results,
                               totalGuesses,
-                              (1000 / (double) totalGuesses)));
+                              (1000 / (double) totalGuesses),firstAnswerCorrect));
 
                         // "Reset Quiz" Button
                         builder.setPositiveButton(R.string.reset_quiz,
@@ -348,7 +364,7 @@ public class MainActivityFragment extends Fragment {
          }
          else { // answer was incorrect
             flagImageView.startAnimation(shakeAnimation); // play shake
-
+            firstGuess = 1;
             // display "Incorrect!" in red
             answerTextView.setText(R.string.incorrect_answer);
             answerTextView.setTextColor(getResources().getColor(

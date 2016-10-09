@@ -11,6 +11,15 @@
       android:persistent="true"
       android:defaultValue="4" />
 
+   <ListPreference
+       android:entries="@array/flags_in_quiz"
+       android:entryValues="@array/flags_in_quiz"
+       android:key="pref_numberOfFlags"
+       android:title="@string/flag_number"
+       android:summary="@string/flag_number_desc"
+       android:persistent="true"
+       android:defaultValue="10" />
+
    <MultiSelectListPreference
       android:entries="@array/regions_list_for_settings"
       android:entryValues="@array/regions_list"

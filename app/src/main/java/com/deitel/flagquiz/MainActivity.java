@@ -21,6 +21,7 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity {
    // keys for reading data from SharedPreferences
    public static final String CHOICES = "pref_numberOfChoices";
+   public static final String FLAGS = "pref_numberOfFlags";
    public static final String REGIONS = "pref_regionsToInclude";
 
    private boolean phoneDevice = true; // used to force portrait mode
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
                R.id.quizFragment);
          quizFragment.updateGuessRows(
             PreferenceManager.getDefaultSharedPreferences(this));
+         quizFragment.updateFLAGS(
+                 PreferenceManager.getDefaultSharedPreferences(this));
          quizFragment.updateRegions(
             PreferenceManager.getDefaultSharedPreferences(this));
          quizFragment.resetQuiz();
